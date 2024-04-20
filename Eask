@@ -12,5 +12,7 @@
 (source "gnu")
 (source "melpa")
 
+(files "pduty-api.el")
+
 (depends-on "emacs" "28.1")
 (depends-on "request" "20230127.417")

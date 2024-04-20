@@ -31,5 +31,12 @@
 
 ;;; Code:
 
+(require 'pduty-api)
+
+(defgroup pduty nil
+  "Access PagerDuty."
+  :prefix "pduty-"
+  :group 'tools)
+
 (provide 'pduty)
 ;;; pduty.el ends here
