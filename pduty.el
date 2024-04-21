@@ -38,5 +38,36 @@
   :prefix "pduty-"
   :group 'tools)
 
+(defcustom pduty-user-id nil
+  "User ID of Pagerduty."
+  :type 'string
+  :group 'pduty)
+
+(defun pduty--create-org-time-stamp (datetime-string)
+  "Create 'org-mode' time stamp.  DATETIME-STRING is ISO 8601 style string."
+  (when datetime-string
+    (let* (datetime-parts)
+      (setq datetime-parts (parse-time-string datetime-string))
+      (format "<%04d-%02d-%02d>"
+              (nth 5 datetime-parts)
+              (nth 4 datetime-parts)
+              (nth 3 datetime-parts)))))
+
+(defun pduty--list-oncalls ()
+  "Get Oncall list (date)."
+  (unless pduty-user-id
+    (error "Required User ID"))
+  (let* ((result (list))
+         (json (pduty-api-oncalls-get pduty-user-id))
+         (oncalls (gethash :oncalls json)))
+    (dolist (oncall oncalls)
+      (let* ((start-date-string (pduty--create-org-time-stamp
+                                 (gethash :start oncall)))
+             (end-date-string (pduty--create-org-time-stamp
+                               (gethash :end oncall))))
+        (when (and start-date-string end-date-string)
+          (add-to-list 'result (format "%s--%s" start-date-string end-date-string)))))
+      result))
+
 (provide 'pduty)
 ;;; pduty.el ends here

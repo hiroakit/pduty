@@ -48,7 +48,7 @@
 (defun pduty-api--request-get (uri)
   "Send HTTP Get request.  URI is PagerDuty API endpoint."
   (unless uri (error "Required URI"))
-  (let* ((headers (pduty-api-request-headers))
+  (let* ((headers (pduty-api--request-headers))
          (response (request uri
                      :type "GET"
                      :headers headers
@@ -65,12 +65,26 @@
   (let* ((base-url "https://api.pagerduty.com/schedules")
          (hexified-schedule-id (when schedule-id
                                  (url-hexify-string schedule-id)))
-         (url (concat base-url "/" hexified-schedule-id)))
-    (request-response-data (pduty-api-request-get url))))
+         (url (concat base-url "/" hexified-schedule-id))
+         (response (pduty-api--request-get url)))
+    (when (= (request-response-status-code response) 401)
+      (error "Response: HTTP 401"))
+    (when (= (request-response-status-code response) 200)
+      (request-response-data response))))
 
-(defun pduty-api-oncalls-get ()
-  "Request Oncalls API."
-  (request-response-data (pduty-api-request-get "https://api.pagerduty.com/oncalls")))
-
+(defun pduty-api-oncalls-get (user-id)
+  "Request Oncalls API.  Required USER-ID of PagerDuty."
+  (unless user-id
+    (error "Required User ID"))
+  (let* ((base-url "https://api.pagerduty.com/oncalls")
+         (hexified-user-id (when user-id
+                             (url-hexify-string user-id)))
+         (url (concat base-url "?user_ids%5B%5D=" hexified-user-id))
+         (response (pduty-api--request-get url)))
+    (when (= (request-response-status-code response) 401)
+      (error "Response: HTTP 401"))
+    (when (= (request-response-status-code response) 200)
+      (request-response-data response))))
+  
 (provide 'pduty-api)
 ;;; pduty-api.el ends here
