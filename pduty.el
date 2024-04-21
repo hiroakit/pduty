@@ -53,20 +53,16 @@
               (nth 4 datetime-parts)
               (nth 3 datetime-parts)))))
 
-(defun pduty--list-oncalls ()
-  "Get Oncall list (date)."
-  (unless pduty-user-id
-    (error "Required User ID"))
+(defun pduty--fetch-oncalls ()
+  "Get on-call schedules from PagerDuty API."
+  (unless pduty-user-id (error "Required User ID"))
   (let* ((result (list))
          (json (pduty-api-oncalls-get pduty-user-id))
          (oncalls (gethash :oncalls json)))
     (dolist (oncall oncalls)
-      (let* ((start-date-string (pduty--create-org-time-stamp
-                                 (gethash :start oncall)))
-             (end-date-string (pduty--create-org-time-stamp
-                               (gethash :end oncall))))
-        (when (and start-date-string end-date-string)
-          (add-to-list 'result (format "%s--%s" start-date-string end-date-string)))))
+      (let* ((schedule (gethash :schedule oncall)))
+        (when schedule
+          (push 'result oncall))))
       result))
 
 (provide 'pduty)
