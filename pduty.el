@@ -86,8 +86,8 @@
     (dolist (oncall oncalls)
       (let* ((schedule (gethash :schedule oncall)))
         (when schedule
-          (push 'result oncall))))
-      result))
+          (setq result (cons oncall result)))))
+    result))
 
 (provide 'pduty)
 ;;; pduty.el ends here
