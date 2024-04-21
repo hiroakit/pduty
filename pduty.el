@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'pduty-api)
+(require 'org)
 
 (defgroup pduty nil
   "Access PagerDuty."
@@ -43,8 +44,31 @@
   :type 'string
   :group 'pduty)
 
+(defun pduty-insert-latest-oncall-as-org-entry ()
+  "Insert on-call schedule as org entry at cursor."
+  (interactive)
+  (let* ((oncalls (pduty--fetch-oncalls))
+         (latest-oncall (car oncalls)))
+    (pduty--insert-org-entry-by-oncall latest-oncall)))
+
+(defun pduty--insert-org-entry-by-oncall (oncall)
+  "Create org entry by ONCALL."
+  (unless oncall (error "Required oncall"))
+  (let* ((schedule (gethash :schedule oncall))
+         (start-date-string (pduty--create-org-time-stamp (gethash :start oncall)))
+         (end-date-string (pduty--create-org-time-stamp (gethash :end oncall))))
+    (cond ((and schedule start-date-string end-date-string)
+           (org-insert-heading)
+           (insert "PagerDuty on-call\n")
+           (insert (format "SCHEDULED: %s--%s" start-date-string end-date-string))
+           (org-set-property "CREATED" (with-temp-buffer (org-insert-time-stamp (current-time) t t)))
+           (org-set-property "CUSTOM_ID" (org-id-new))
+           (org-set-property "PAGERDUTY_SCHEDULE_URL" (gethash :html_url schedule)))
+          (t
+           (message "[pduty] Not Found On-call Schedule")))))
+
 (defun pduty--create-org-time-stamp (datetime-string)
-  "Create 'org-mode' time stamp.  DATETIME-STRING is ISO 8601 style string."
+  "Create \='org-mode\=' time stamp.  DATETIME-STRING is ISO 8601 style string."
   (when datetime-string
     (let* (datetime-parts)
       (setq datetime-parts (parse-time-string datetime-string))
