@@ -40,7 +40,7 @@
   :group 'tools)
 
 (defcustom pduty-user-id nil
-  "User ID of Pagerduty."
+  "User ID of PagerDuty."
   :type 'string
   :group 'pduty)
 
@@ -78,7 +78,7 @@
               (nth 3 datetime-parts)))))
 
 (defun pduty--fetch-oncalls ()
-  "Get on-call schedules from PagerDuty API."
+  "Fetch on-call data from PagerDuty API."
   (unless pduty-user-id (error "Required User ID"))
   (let* ((result (list))
          (json (pduty-api-oncalls-get pduty-user-id))
