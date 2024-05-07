@@ -44,6 +44,10 @@
   :type 'string
   :group 'pduty)
 
+(defun pduty-list-incidents ()
+  "Show incidents."
+  (interactive))
+
 (defun pduty-insert-latest-oncall-as-org-entry ()
   "Insert on-call schedule as org entry at cursor."
   (interactive)
