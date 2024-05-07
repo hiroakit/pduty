@@ -46,7 +46,14 @@
 
 (defun pduty-list-incidents ()
   "Show incidents."
-  (interactive))
+  (interactive)
+  (let* ((incidents (pduty--fetch-incidents)))
+    (dolist (incident incidents)
+      (let* ((id (gethash :incident_number incident))
+             (status (gethash :status incident))
+             (title (gethash :title incident))
+             (html_url (gethash :html_url incident)))
+        (message "%s %s %s %s" id status title html_url)))))
 
 (defun pduty-insert-latest-oncall-as-org-entry ()
   "Insert on-call schedule as org entry at cursor."
@@ -92,6 +99,12 @@
         (when schedule
           (setq result (cons oncall result)))))
     result))
+
+(defun pduty--fetch-incidents ()
+  "Fetch incidents data from PagerDuty API."
+  (let* ((json (pduty-api-incidents-get))
+         (incidents (gethash :incidents json)))
+    incidents))
 
 (provide 'pduty)
 ;;; pduty.el ends here

@@ -60,6 +60,15 @@
                      :sync t)))
     response))
 
+(defun pduty-api-incidents-get ()
+  "Request Incidents API."
+  (let* ((url "https://api.pagerduty.com/incidents")
+         (response (pduty-api--request-get url)))
+    (when (= (request-response-status-code response) 401)
+      (error "Response: HTTP 401"))
+    (when (= (request-response-status-code response) 200)
+      (request-response-data response))))
+
 (defun pduty-api-schedules-get (&optional schedule-id)
   "Request Schedules API.  Get a schedule, using SCHEDULE-ID."
   (let* ((base-url "https://api.pagerduty.com/schedules")
