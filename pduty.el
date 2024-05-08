@@ -44,16 +44,24 @@
   :type 'string
   :group 'pduty)
 
+(defconst pduty-incident-buffer "*PDuty Incident List*"
+  "Buffer for Incident List.")
+
 (defun pduty-list-incidents ()
   "Show incidents."
   (interactive)
+  (let ((buffer (get-buffer-create pduty-incident-buffer)))
+    (if (called-interactively-p 'interactive)
+        (switch-to-buffer buffer)
+      (set-buffer buffer)))
   (let* ((incidents (pduty--fetch-incidents)))
     (dolist (incident incidents)
       (let* ((id (gethash :incident_number incident))
              (status (gethash :status incident))
              (title (gethash :title incident))
-             (html_url (gethash :html_url incident)))
-        (message "%s %s %s %s" id status title html_url)))))
+             (html_url (gethash :html_url incident))
+             (text (format "%s %s %s %s" id status title html_url)))
+        (insert (format "%s\n" text))))))
 
 (defun pduty-insert-latest-oncall-as-org-entry ()
   "Insert on-call schedule as org entry at cursor."
