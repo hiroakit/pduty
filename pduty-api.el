@@ -42,7 +42,7 @@
   (let ((headers '(("Accept" . "application/json")
                    ("Content-Type" . "application/json")))
         (token (cons "Authorization" (format "Token token=%s" pduty-api-user-token-key))))
-    (add-to-list 'headers token)
+    (push token headers)
     headers))
 
 (defun pduty-api--request-get (uri)
