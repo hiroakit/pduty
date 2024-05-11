@@ -1,1 +1,7 @@
+#+macro: github-ci [[https://github.com/hiroakit/pduty/actions/workflows/test.yml][https://github.com/hiroakit/pduty/actions/workflows/test.yml/badge.svg?branch=main]]
+#+macro: melpa [[https://melpa.org/#/pduty][file:https://melpa.org/packages/pduty.svg]]
+#+macro: GPLv3 [[https://www.gnu.org/licenses/gpl-3.0][https://img.shields.io/badge/License-GPL%20v3-blue.svg]]
+
 TBD.
+
+{{{github-ci}}} {{{GPLv3}}}
