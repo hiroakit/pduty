@@ -1,3 +1,41 @@
-TBD.
+* pduty - PagerDuty client for Emacs
 
 [[https://github.com/hiroakit/pduty/actions/workflows/test.yml][file:https://github.com/hiroakit/pduty/actions/workflows/test.yml/badge.svg?branch=main]] [[https://www.gnu.org/licenses/gpl-3.0][file:https://img.shields.io/badge/License-GPL%20v3-blue.svg]]
+
+pduty provide PagerDuty API client for Emacs.
+
+Currently, the functions that can be provided are limited as it is in the prototype stage.
+
+* Usage
+
+M-x ~pduty-insert-latest-oncall-as-org-entry~ in org buffer.
+
+#+begin_src org
+,* PagerDuty on-call
+SCHEDULED: <2024-04-15>--<2024-04-22>
+:PROPERTIES:
+:CREATED:  [2024-04-15 Mon 09:30]
+:CUSTOM_ID: 6F4B3737-CE65-4DD4-AE8D-A2FEF9D6A2AB
+:PAGERDUTY_SCHEDULE_URL: https://example.pagerduty.com/schedules/●●●●●●●
+:END:
+#+end_src
+
+* Installation
+
+pduty requires manual installation. In the future, this package will be registered with MELPA.
+
+~init.el~
+
+#+begin_src emacs-lisp
+(require 'pduty)
+(setq pduty-api-user-token-key (getenv "PAGERDUTY_USER_TOKEN_KEY"))
+(setq pduty-user-id (getenv "PAGERDUTY_USER_ID"))
+#+end_src
+
+leaf
+
+#+begin_src emacs-lisp
+(leaf pduty
+  :config (setq pduty-api-user-token-key (getenv "PAGERDUTY_USER_TOKEN_KEY"))
+          (setq pduty-user-id (getenv "PAGERDUTY_USER_ID")))
+#+end_src
